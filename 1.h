@@ -7,8 +7,8 @@
 using namespace std;
 using namespace cv;
 
-#define maxRange 10000  //设置最大边框检测范围
-#define minRange 6000  //设置最小边框检测范围
+#define maxRange 9000  //设置最大边框检测范围
+#define minRange 600  //设置最小边框检测范围
 #define BlueThreshold 55
 #define GreenThreshold 55
 #define RedThreshold 30
@@ -96,16 +96,20 @@ Point2f calculaterectangleCore(Mat src)//计算输入图片要打击的装甲版的中心点
 		{
 			RotatedRect rotated_rect = minAreaRect(contour);
 			rotated_rect.points(points4);
-			float x = rotated_rect.size.height / rotated_rect.size.width;
-			if (x<2.1&&x>0.48) {
+			for (int i = 0; i < 4; i++)
+				// 注意Scala中存储顺序 BGR
+				line(src, points4[i], points4[(i + 1) % 4], Scalar(255, 255, 0), 5);
+			float y = rotated_rect.size.height / rotated_rect.size.width;
+			if (y<1.8&&y>0.56) {
 				rectangleCore = rotated_rect.center;
 				for (int i = 0; i < 4; i++)
 					// 注意Scala中存储顺序 BGR
 					line(src, points4[i], points4[(i + 1) % 4], Scalar(0, 255, 0), 5);
+				circle(src, rectangleCore, 5, Scalar(0,0,255));
 			}
 		}
 	}
-	circle(src, rectangleCore, 5, Scalar(0,0,255));
+	
 	string b = "abc";
 	string c = ".png";
 	stringstream ss;
@@ -187,7 +191,7 @@ void videoProgress() {
 		}
 		calculaterectangleCore(frame);
 		imshow("读取视频", frame);
-		waitKey(5);
+		waitKey(1);
 	}
 }
 
