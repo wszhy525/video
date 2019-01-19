@@ -9,8 +9,8 @@ using namespace cv;
 
 #define maxRange 9000  //设置最大边框检测范围
 #define minRange 600  //设置最小边框检测范围
-#define BlueThreshold 55
-#define GreenThreshold 55
+#define BlueThreshold 75
+#define GreenThreshold 75
 #define RedThreshold 30
 #define Blue 145
 #define Green 145
@@ -38,7 +38,6 @@ void colorReduce(Mat & inputImg, Mat &outputImg, int div)//因为输入的是256色的图
 		{
 			data[j] = data[j] / div * div + div / 2;//减少像素个数
 			//经过对规则图片的分析，我发现线框部分的rgb值区域在（R>200，B>100，G>100+），白色区域是（200+，200+，200+），而其他杂质区域都在几十左右。我希望以此来处理图像
-
 		}
 	}
 
@@ -100,7 +99,7 @@ Point2f calculaterectangleCore(Mat src)//计算输入图片要打击的装甲版的中心点
 				// 注意Scala中存储顺序 BGR
 				line(src, points4[i], points4[(i + 1) % 4], Scalar(255, 255, 0), 5);
 			float y = rotated_rect.size.height / rotated_rect.size.width;
-			if (y<1.8&&y>0.56) {
+			if (y<1.85&&y>0.430) {
 				rectangleCore = rotated_rect.center;
 				for (int i = 0; i < 4; i++)
 					// 注意Scala中存储顺序 BGR
@@ -191,6 +190,7 @@ void videoProgress() {
 		}
 		calculaterectangleCore(frame);
 		imshow("读取视频", frame);
+		
 		waitKey(1);
 	}
 }
